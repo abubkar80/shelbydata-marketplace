@@ -1,0 +1,298 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-mint: #00d4aa;
+    --color-mint-dim: rgba(0, 212, 170, 0.1);
+    --color-mint-glow: rgba(0, 212, 170, 0.25);
+    --color-indigo: #6366f1;
+    --color-indigo-dim: rgba(99, 102, 241, 0.1);
+    --color-border: rgba(22, 22, 58, 0.8);
+    --color-surface: #0a0a1f;
+    --color-bg: #07071
+
+2;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-space-900 text-data font-sans antialiased;
+    background-image:
+      linear-gradient(rgba(22, 22, 58, 0.3) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(22, 22, 58, 0.3) 1px, transparent 1px);
+    background-size: 40px 40px;
+    background-attachment: fixed;
+    min-height: 100vh;
+  }
+
+  ::-webkit-scrollbar {
+    @apply w-1.5;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-space-900;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-space-600 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-mint);
+  }
+
+  ::selection {
+    background: var(--color-mint-glow);
+    color: #fff;
+  }
+}
+
+@layer components {
+  /* ── Card ──────────────────────────────────────────────── */
+  .card {
+    @apply bg-space-800/80 border border-border rounded-xl backdrop-blur-sm;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .card:hover {
+    border-color: var(--color-mint-glow);
+    box-shadow: 0 0 30px var(--color-mint-dim);
+  }
+
+  .card-active {
+    border-color: var(--color-mint-glow);
+    box-shadow: 0 0 20px var(--color-mint-dim);
+  }
+
+  /* ── Buttons ────────────────────────────────────────────── */
+  .btn-primary {
+    @apply inline-flex items-center gap-2 px-5 py-2.5 rounded-lg font-mono text-sm font-bold
+           text-space-900 bg-mint transition-all duration-200 cursor-pointer select-none;
+  }
+
+  .btn-primary:hover {
+    box-shadow: 0 0 25px var(--color-mint-glow);
+    @apply brightness-110;
+  }
+
+  .btn-primary:active {
+    @apply scale-95;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center gap-2 px-5 py-2.5 rounded-lg font-mono text-sm
+           text-mint border border-mint/30 bg-mint/5 transition-all duration-200 cursor-pointer select-none;
+  }
+
+  .btn-secondary:hover {
+    @apply bg-mint/10 border-mint/60;
+    box-shadow: 0 0 15px var(--color-mint-dim);
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm text-muted
+           hover:text-data hover:bg-space-700 transition-all duration-200 cursor-pointer select-none;
+  }
+
+  .btn-danger {
+    @apply inline-flex items-center gap-2 px-5 py-2.5 rounded-lg font-mono text-sm
+           text-red-400 border border-red-500/30 bg-red-500/5 hover:bg-red-500/10 transition-all duration-200 cursor-pointer;
+  }
+
+  /* ── Input ──────────────────────────────────────────────── */
+  .input {
+    @apply w-full px-4 py-3 bg-space-700/60 border border-border rounded-lg
+           text-data placeholder-muted font-mono text-sm
+           focus:outline-none focus:border-mint/50 focus:ring-1 focus:ring-mint/30
+           transition-all duration-200;
+  }
+
+  .label {
+    @apply block text-xs font-mono text-muted uppercase tracking-widest mb-2;
+  }
+
+  /* ── Badge ──────────────────────────────────────────────── */
+  .badge {
+    @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-mono;
+  }
+
+  .badge-mint {
+    @apply badge bg-mint/10 text-mint border border-mint/20;
+  }
+
+  .badge-indigo {
+    @apply badge bg-indigo-500/10 text-indigo-400 border border-indigo-500/20;
+  }
+
+  .badge-amber {
+    @apply badge bg-amber-500/10 text-amber-400 border border-amber-500/20;
+  }
+
+  .badge-gray {
+    @apply badge bg-space-600/50 text-muted border border-border;
+  }
+
+  /* ── Stat Card ──────────────────────────────────────────── */
+  .stat-card {
+    @apply card p-5 flex flex-col gap-1;
+  }
+
+  .stat-value {
+    @apply font-mono text-2xl font-bold text-data;
+  }
+
+  .stat-label {
+    @apply font-mono text-xs text-muted uppercase tracking-widest;
+  }
+
+  /* ── Glow text ──────────────────────────────────────────── */
+  .glow-text {
+    color: var(--color-mint);
+    text-shadow: 0 0 20px var(--color-mint-glow);
+  }
+
+  /* ── Progress bar ───────────────────────────────────────── */
+  .progress-bar {
+    @apply h-1 bg-space-700 rounded-full overflow-hidden;
+  }
+
+  .progress-fill {
+    @apply h-full bg-mint rounded-full transition-all duration-500;
+    box-shadow: 0 0 10px var(--color-mint-glow);
+  }
+
+  /* ── Step indicator ─────────────────────────────────────── */
+  .step-dot {
+    @apply w-8 h-8 rounded-full flex items-center justify-center font-mono text-xs font-bold
+           border-2 transition-all duration-300;
+  }
+
+  .step-dot-active {
+    @apply step-dot bg-mint/10 border-mint text-mint;
+    box-shadow: 0 0 15px var(--color-mint-dim);
+  }
+
+  .step-dot-done {
+    @apply step-dot bg-mint border-mint text-space-900;
+  }
+
+  .step-dot-pending {
+    @apply step-dot bg-space-700 border-border text-muted;
+  }
+
+  /* ── Terminal block ─────────────────────────────────────── */
+  .terminal {
+    @apply bg-space-950 border border-border rounded-lg p-4 font-mono text-xs text-green-400;
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+
+  /* ── Scanline overlay ───────────────────────────────────── */
+  .scanlines::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.03) 2px,
+      rgba(0, 0, 0, 0.03) 4px
+    );
+    pointer-events: none;
+    border-radius: inherit;
+  }
+
+  /* ── Divider ────────────────────────────────────────────── */
+  .divider {
+    @apply border-t border-border my-6;
+  }
+
+  /* ── Tooltip ────────────────────────────────────────────── */
+  .tooltip {
+    @apply absolute z-50 px-3 py-1.5 bg-space-700 border border-border rounded-lg
+           text-xs font-mono text-data whitespace-nowrap pointer-events-none opacity-0
+           transition-opacity duration-200;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    background: linear-gradient(135deg, var(--color-mint) 0%, #6366f1 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .border-glow {
+    border-color: var(--color-mint-glow);
+    box-shadow: 0 0 15px var(--color-mint-dim);
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.4s ease-out both;
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-out both;
+  }
+}
+
+/* ── Keyframes ────────────────────────────────────────────── */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.cursor-blink::after {
+  content: "_";
+  animation: blink 1s step-end infinite;
+  color: var(--color-mint);
+}
+
+/* ── Drag & Drop zone ─────────────────────────────────────── */
+.dropzone {
+  @apply relative border-2 border-dashed border-border rounded-xl p-10
+         flex flex-col items-center justify-center gap-4 cursor-pointer
+         transition-all duration-300 text-center;
+}
+
+.dropzone:hover, .dropzone.active {
+  border-color: var(--color-mint);
+  background: var(--color-mint-dim);
+}
+
+/* ── Number ticker ────────────────────────────────────────── */
+.ticker {
+  font-variant-numeric: tabular-nums;
+  @apply font-mono;
+}
