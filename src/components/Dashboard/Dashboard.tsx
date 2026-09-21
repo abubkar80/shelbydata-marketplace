@@ -93,11 +93,9 @@ export function Dashboard() {
         <div className="stat-card">
           <div className="flex items-center gap-2 text-muted mb-1">
             <Clock className="w-3.5 h-3.5" />
-            <span className="stat-label">Active</span>
+            <span className="stat-label">Committed</span>
           </div>
-          <span className="stat-value">
-            {datasets.filter((d) => d.expirationMicros > Date.now() * 1000).length}
-          </span>
+          <span className="stat-value">{datasets.length}</span>
         </div>
       </div>
 
@@ -119,7 +117,8 @@ export function Dashboard() {
           </div>
           <h3 className="font-mono text-sm font-bold text-data mb-2">No datasets yet</h3>
           <p className="font-mono text-xs text-muted mb-5 max-w-xs">
-            Upload your first dataset to the Shelby Network and start monetizing your data.
+            Upload your first dataset to the Shelby Network. Listings are public blobs under
+            your wallet address.
           </p>
           <Link to="/upload" className="btn-primary text-xs">
             <Upload className="w-3.5 h-3.5" />
@@ -135,7 +134,7 @@ export function Dashboard() {
               <DatasetCard
                 dataset={ds}
                 onDownload={() => {
-                  downloadBlob(ds.downloadUrl, ds.blobName)
+                  downloadBlob(ds.downloadUrl, ds.fileName || ds.metadata?.name || ds.blobName)
                     .then(() => toast("success", `Downloaded "${ds.blobName}"`))
                     .catch(() => toast("error", "Download failed."));
                 }}

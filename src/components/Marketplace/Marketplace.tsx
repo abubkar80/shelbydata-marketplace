@@ -4,6 +4,7 @@ import { useShelby } from "../../hooks/useShelby";
 import { useToast } from "../../providers/ToastProvider";
 import { DatasetCard } from "./DatasetCard";
 import { CATEGORY_LABELS, type DatasetCategory, type Dataset } from "../../types";
+import { resolveCategory } from "../../lib/datasetMeta";
 
 const ALL_CATS = Object.entries(CATEGORY_LABELS) as [DatasetCategory, string][];
 
@@ -39,9 +40,19 @@ export function Marketplace() {
   };
 
   const filtered = datasets.filter((d) => {
-    const matchesQ =
-      !query || d.blobName.toLowerCase().includes(query.toLowerCase());
-    const matchesCat = catFilter === "all";
+    const haystack = [
+      d.blobName,
+      d.fileName,
+      d.metadata?.name,
+      d.metadata?.description,
+      d.metadata?.tags?.join(" "),
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
+    const matchesQ = !query || haystack.includes(query.toLowerCase());
+    const matchesCat =
+      catFilter === "all" || resolveCategory(d.blobName, d.metadata) === catFilter;
     return matchesQ && matchesCat;
   });
 
@@ -96,7 +107,7 @@ export function Marketplace() {
               className="input pl-9 py-2 text-xs"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Filter by filename..."
+              placeholder="Filter by name, tags, or filename..."
             />
           </div>
           <div className="flex items-center gap-1 flex-wrap">
@@ -106,7 +117,7 @@ export function Marketplace() {
             >
               All
             </button>
-            {ALL_CATS.slice(0, 5).map(([k, v]) => (
+            {ALL_CATS.map(([k, v]) => (
               <button
                 key={k}
                 onClick={() => setCatFilter(k === catFilter ? "all" : k)}
@@ -150,6 +161,15 @@ export function Marketplace() {
         </div>
       )}
 
+      {!loading && searched && datasets.length > 0 && filtered.length === 0 && (
+        <div className="flex flex-col items-center justify-center py-16 text-center">
+          <p className="font-mono text-sm text-data mb-2">No datasets match this filter</p>
+          <p className="font-mono text-xs text-muted">
+            Clear the category or search query to see all blobs for this address.
+          </p>
+        </div>
+      )}
+
       {/* Results grid */}
       {!loading && filtered.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -158,7 +178,7 @@ export function Marketplace() {
               <DatasetCard
                 dataset={ds}
                 onDownload={() => {
-                  downloadBlob(ds.downloadUrl, ds.blobName)
+                  downloadBlob(ds.downloadUrl, ds.fileName || ds.metadata?.name || ds.blobName)
                     .then(() => toast("success", `Downloaded "${ds.blobName}"`))
                     .catch(() => toast("error", "Download failed."));
                 }}

@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { Wallet, ChevronDown, LogOut, Copy, Check } from "lucide-react";
-import { truncateAddress } from "../../lib/shelbyClient";
+import { truncateAddress } from "../lib/shelbyClient";
+import { toAddressString } from "../lib/address";
 
 export function WalletButton() {
   const { account, connected, connect, disconnect, wallets } = useWallet();
@@ -10,7 +11,7 @@ export function WalletButton() {
 
   const handleCopy = () => {
     if (!account?.address) return;
-    navigator.clipboard.writeText(account.address);
+    navigator.clipboard.writeText(toAddressString(account.address));
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   };
@@ -88,7 +89,7 @@ export function WalletButton() {
           <div className="px-3 py-2 border-b border-border mb-1">
             <p className="text-xs font-mono text-muted">Connected Address</p>
             <p className="text-xs font-mono text-data mt-0.5 break-all">
-              {account?.address}
+              {toAddressString(account?.address)}
             </p>
           </div>
           <button
