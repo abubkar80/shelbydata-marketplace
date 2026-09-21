@@ -8,7 +8,7 @@ This is a Web3 engineering sample: wallet connect, blob encode/register/upload/c
 
 ## What I built
 
-- **Upload flow** — Petra signs two Shelbynet transactions (register blob, then commit object). File bytes are erasure-coded in the browser as `Uint8Array` (no Node `Buffer`) and written with `putBlobChunksets`.
+- **Upload flow** — Petra signs two Shelbynet transactions (register blob, then commit object). App code reads files as `Uint8Array`. A Vite Buffer polyfill is included because `@shelby-protocol/sdk` still references Node `Buffer` in the browser bundle.
 - **Listing metadata** — name, description, category, tags, and license are packed into the on-chain blob name so they survive without a backend database.
 - **Dashboard** — lists committed objects for the connected wallet.
 - **Marketplace** — search any Shelbynet address and filter results by category/text using that stored metadata.
