@@ -17,7 +17,6 @@ const INITIAL_FORM: UploadFormData = {
   category: "other",
   tags: "",
   license: "MIT",
-  price: "0",
 };
 
 export function UploadForm() {
@@ -55,9 +54,18 @@ export function UploadForm() {
       return;
     }
     setStep(2);
-    const url = await uploadDataset(form.file);
+    const url = await uploadDataset(form.file, {
+      name: form.name.trim(),
+      description: form.description.trim(),
+      category: form.category,
+      tags: form.tags
+        .split(",")
+        .map((tag) => tag.trim())
+        .filter(Boolean),
+      license: form.license,
+    });
     if (url) {
-      toast("success", `✓ "${form.file.name}" uploaded to Shelby!`);
+      toast("success", `"${form.name.trim() || form.file.name}" uploaded to Shelby.`);
     } else {
       toast("error", uploadState.error ?? "Upload failed.");
     }
@@ -209,6 +217,12 @@ export function UploadForm() {
             </div>
           </div>
 
+          <p className="text-xs font-mono text-muted leading-relaxed">
+            Name, description, category, tags, and license are packed into the on-chain blob
+            name so Marketplace can filter without a separate database. Upload asks for two
+            wallet signatures (register, then commit).
+          </p>
+
           <div className="flex gap-3 pt-2">
             <button onClick={() => setStep(0)} className="btn-secondary flex-1 justify-center">
               Back
@@ -327,9 +341,10 @@ export function UploadForm() {
 
 function stepLabel(step: string): string {
   const labels: Record<string, string> = {
-    encoding: "Encoding file & generating commitments...",
-    registering: "Registering on Aptos blockchain...",
-    uploading: "Uploading to Shelby RPC nodes...",
+    encoding: "Encoding file and generating commitments...",
+    registering: "Registering blob on Shelbynet...",
+    uploading: "Uploading chunksets to Shelby RPC...",
+    committing: "Committing object on-chain...",
   };
   return labels[step] ?? "Processing...";
 }

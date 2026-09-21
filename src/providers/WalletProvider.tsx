@@ -3,13 +3,15 @@ import { Network } from "@aptos-labs/ts-sdk";
 import { type PropsWithChildren } from "react";
 
 export function WalletProvider({ children }: PropsWithChildren) {
+  const aptosApiKey = import.meta.env.VITE_APTOS_API_KEY ?? "";
+
   return (
     <AptosWalletAdapterProvider
       autoConnect={false}
       dappConfig={{
-        network: Network.TESTNET,
+        network: Network.SHELBYNET,
         aptosApiKeys: {
-          testnet: import.meta.env.VITE_APTOS_API_KEY ?? "",
+          [Network.SHELBYNET]: aptosApiKey,
         },
       }}
       onError={(error) => {

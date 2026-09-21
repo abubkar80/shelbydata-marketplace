@@ -19,8 +19,8 @@ export function Footer() {
               </span>
             </div>
             <p className="text-xs font-mono text-muted leading-relaxed max-w-xs">
-              Decentralized AI dataset marketplace built on the Shelby Network and Aptos blockchain.
-              Store, access, and monetize high-quality datasets.
+              Browser dapp for uploading and browsing AI dataset blobs on Shelby / Shelbynet
+              with Petra. Discovery is by wallet address — this is not a paid marketplace.
             </p>
             <div className="flex items-center gap-3 mt-4">
               <a href="https://x.com/shelbyserves" target="_blank" rel="noopener noreferrer"
@@ -33,7 +33,7 @@ export function Footer() {
                             hover:border-mint/40 hover:text-mint text-muted transition-all duration-200">
                 <ExternalLink className="w-3.5 h-3.5" />
               </a>
-              <a href="https://github.com" target="_blank" rel="noopener noreferrer"
+              <a href="https://github.com/abubkar80/shelbydata-marketplace" target="_blank" rel="noopener noreferrer"
                  className="w-8 h-8 rounded-lg bg-space-700 border border-border flex items-center justify-center
                             hover:border-mint/40 hover:text-mint text-muted transition-all duration-200">
                 <Github className="w-3.5 h-3.5" />

@@ -7,43 +7,43 @@ import {
 const FEATURES = [
   {
     icon: Zap,
-    title: "Hot Storage, Instant Access",
-    desc: "Shelby's pay-per-read model ensures storage providers deliver top-tier read performance — perfect for AI training loops.",
+    title: "Hot blob storage via Shelby",
+    desc: "Uploads go to Shelby storage providers through the official browser SDK — erasure coding, on-chain registration, then RPC put.",
     color: "text-mint",
     bg: "bg-mint/10 border-mint/20",
   },
   {
     icon: Shield,
-    title: "Cryptographic Provenance",
-    desc: "Every blob read returns a cryptographic proof. Verify data origin, consent, and integrity — critical for regulated AI workflows.",
+    title: "On-chain blob registration",
+    desc: "Each upload registers a merkle root on Shelbynet (Aptos). This app does not ship custom Move or Solidity contracts.",
     color: "text-indigo-400",
     bg: "bg-indigo-500/10 border-indigo-500/20",
   },
   {
     icon: Globe,
-    title: "Decentralized & Censorship-Resistant",
-    desc: "No AWS. No GCP. Your datasets live on a distributed network of storage providers with 70% lower egress fees.",
+    title: "Public discovery by address",
+    desc: "Marketplace lists committed blobs for any Shelbynet address you search. There is no global catalog or paid checkout in this UI.",
     color: "text-amber-400",
     bg: "bg-amber-500/10 border-amber-500/20",
   },
   {
     icon: BarChart2,
-    title: "Tokenized Monetization",
-    desc: "Contributors earn ShelbyUSD based on dataset reads. Transparent, on-chain, and settled on Aptos.",
+    title: "Listing metadata that persists",
+    desc: "Name, description, category, tags, and license are packed into the blob name so filters work without a backend database.",
     color: "text-teal-400",
     bg: "bg-teal-400/10 border-teal-400/20",
   },
   {
     icon: Lock,
-    title: "Aptos Security",
-    desc: "Coordination and settlement powered by Aptos: 600ms finality, 30k TPS, $0.000005 gas — without compromising scalability.",
+    title: "Petra wallet on Shelbynet",
+    desc: "Connect, sign register + commit transactions, and pay network fees with test APT / ShelbyUSD from the faucets.",
     color: "text-mint",
     bg: "bg-mint/10 border-mint/20",
   },
   {
     icon: Cpu,
-    title: "AI-Native Infrastructure",
-    desc: "Purpose-built for AI pipelines — stream datasets directly into training jobs without cloud egress bottlenecks.",
+    title: "AI dataset workflow, not training infra",
+    desc: "Built as a sample for storing and browsing dataset files. It does not run training jobs or measure cloud egress savings.",
     color: "text-indigo-400",
     bg: "bg-indigo-500/10 border-indigo-500/20",
   },
@@ -53,17 +53,17 @@ const HOW_IT_WORKS = [
   {
     num: "01",
     title: "Connect Wallet",
-    desc: "Install Petra wallet, switch to Shelbynet, and fund with APT + ShelbyUSD from the faucet.",
+    desc: "Install Petra, switch to Shelbynet, and fund with test APT plus ShelbyUSD.",
   },
   {
     num: "02",
     title: "Upload Dataset",
-    desc: "Drop your file. We encode it, register it on-chain, and push it to Shelby storage providers in one flow.",
+    desc: "Drop a file, add metadata, then sign the register and commit transactions.",
   },
   {
     num: "03",
-    title: "Share & Earn",
-    desc: "Share your dataset URL. Every read by researchers and AI teams earns you ShelbyUSD automatically.",
+    title: "Browse & Download",
+    desc: "Open Dashboard for your blobs, or Marketplace to search any uploader address.",
   },
 ];
 
@@ -93,8 +93,9 @@ export function Home() {
         </h1>
 
         <p className="font-sans text-base text-muted max-w-xl mx-auto leading-relaxed mb-8">
-          Store, discover, and monetize high-quality AI datasets on the Shelby Network.
-          Built on Aptos for speed, security, and transparent incentives.
+          A TypeScript/React dapp that stores dataset files on the Shelby Network and lists
+          them by wallet address. Built as a Web3 engineering sample — not a production
+          marketplace with payouts.
         </p>
 
         <div className="flex items-center justify-center gap-4 flex-wrap">
@@ -111,9 +112,9 @@ export function Home() {
         {/* Mini stats */}
         <div className="flex items-center justify-center gap-8 mt-10 flex-wrap">
           {[
-            { value: "70%", label: "Lower egress fees" },
-            { value: "600ms", label: "Aptos finality" },
-            { value: "30k", label: "TPS capacity" },
+            { value: "3 steps", label: "Upload → Dashboard → Market" },
+            { value: "2 txs", label: "Register then commit" },
+            { value: "SDK", label: "Shelby + Aptos TypeScript" },
           ].map((s) => (
             <div key={s.label} className="text-center">
               <p className="font-mono text-xl font-bold glow-text">{s.value}</p>
@@ -152,7 +153,7 @@ export function Home() {
       <section>
         <div className="text-center mb-10">
           <p className="font-mono text-xs text-mint uppercase tracking-widest mb-2">Why ShelbyData</p>
-          <h2 className="font-mono text-xl font-bold text-data">Built for Serious AI Workloads</h2>
+          <h2 className="font-mono text-xl font-bold text-data">What this sample actually does</h2>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {FEATURES.map((f, i) => (

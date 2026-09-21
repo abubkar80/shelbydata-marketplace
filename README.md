@@ -1,238 +1,158 @@
-# ShelbyData — Decentralized AI Dataset Marketplace
+# ShelbyData — Shelbynet dataset browser
 
-> A full-stack Web3 application built on the [Shelby Network](https://shelby.xyz) and Aptos blockchain, enabling researchers and developers to store, discover, and monetize AI datasets with cryptographic provenance and real-time hot storage.
+A TypeScript/React dapp that uploads files to the [Shelby Network](https://shelby.xyz) on **Shelbynet**, registers them with the official Shelby/Aptos TypeScript SDKs, and lets you browse committed blobs by wallet address.
 
----
-
-## 🌐 Live Demo
-
-> Deploy to Vercel/Netlify and paste URL here for submission.
-
-## 📺 Demo Video
-
-> Record a Loom walkthrough and paste URL here.
+This is a Web3 engineering sample: wallet connect, blob encode/register/upload/commit, and a small discovery UI. It is **not** a production marketplace, does **not** include custom Move or Solidity contracts, and does **not** implement paid listings or contributor payouts.
 
 ---
 
-## 🧠 Project Overview
+## What I built
 
-ShelbyData is a decentralized AI dataset marketplace leveraging:
+- **Upload flow** — Petra signs two Shelbynet transactions (register blob, then commit object). File bytes are erasure-coded in the browser as `Uint8Array` (no Node `Buffer`) and written with `putBlobChunksets`.
+- **Listing metadata** — name, description, category, tags, and license are packed into the on-chain blob name so they survive without a backend database.
+- **Dashboard** — lists committed objects for the connected wallet.
+- **Marketplace** — search any Shelbynet address and filter results by category/text using that stored metadata.
 
-- **Shelby Network** — high-performance blob storage with pay-per-read incentives
-- **Aptos Blockchain** — on-chain registration, settlement, and economic coordination  
-- **Petra Wallet** — seamless Web3 wallet integration for Shelbynet
+## How to navigate
 
-### The Problem
+1. **Upload** (`/upload`) — connect Petra, drop a file, fill metadata, approve both signatures.
+2. **Dashboard** (`/dashboard`) — see blobs owned by the connected account.
+3. **Marketplace** (`/marketplace`) — paste an uploader address (your own after upload) and filter the public listing.
 
-AI teams today rely on centralized cloud storage (AWS S3, GCS) for dataset hosting:
-
-- **Egress fees** bleed budgets on large-scale training runs
-- **No provenance** — you can't verify where data came from or who consented
-- **Single point of failure** — vendor lock-in, takedowns, regional restrictions
-- **Contributors aren't rewarded** — data creators receive nothing from downstream usage
-
-### The Solution
-
-ShelbyData replaces centralized cloud storage with the Shelby Network:
-
-| Feature | Centralized Cloud | ShelbyData |
-|---|---|---|
-| Egress fees | Full price | ~70% cheaper |
-| Data provenance | None | Cryptographic proof per read |
-| Availability | Vendor-dependent | Decentralized SP network |
-| Contributor rewards | None | ShelbyUSD per read |
-| Censorship resistance | No | Yes |
+Home (`/`) is a short explanation of that loop.
 
 ---
 
-## 🏗️ Architecture
+## Live demo / video
 
-```
-User (Browser)
-    │
-    ├── Petra Wallet (Aptos Testnet / Shelbynet)
-    │
-    ├── @aptos-labs/wallet-adapter-react
-    │       └── signAndSubmitTransaction()
-    │               └── Register blob on-chain (Aptos Smart Contract)
-    │
-    └── @shelby-protocol/sdk/browser
-            ├── createDefaultErasureCodingProvider() → WASM erasure coding
-            ├── generateCommitments()               → Merkle root hash
-            ├── ShelbyBlobClient.createRegisterBlobPayload()
-            └── shelbyClient.rpc.putBlob()          → Upload to SP nodes
-```
+No hosted demo URL is included. Run locally with the steps below.
 
-### Upload Flow (3 Steps)
-
-1. **Encode** — File is split into chunks via erasure coding (WASM). Commitment hashes + Merkle root are generated.
-2. **Register** — A transaction is submitted to the Aptos smart contract, registering the blob metadata on-chain.
-3. **Upload** — The raw file data is uploaded to Shelby RPC nodes, which verify it against the on-chain registration.
-
-### Download Flow
-
-Files are accessible via a deterministic URL pattern:
-
-```
-https://api.testnet.shelby.xyz/shelby/v1/blobs/<uploader-address>/<filename>
-```
-
-Or via the SDK:
-```typescript
-await shelbyClient.coordination.getAccountBlobs({ account: address })
-```
+A walkthrough video is optional; add a Loom (or similar) link here if you record one.
 
 ---
 
-## 🚀 Getting Started
+## Stack (honest)
+
+| Layer | What this repo uses |
+|---|---|
+| UI | React 18 + Vite + TypeScript + Tailwind CSS + React Router v6 |
+| Wallet | `@aptos-labs/wallet-adapter-react` + Petra (AIP-62) |
+| Chain / storage SDKs | `@aptos-labs/ts-sdk` **5.2.1** and `@shelby-protocol/sdk` **0.9.1** (browser) |
+| Contracts | Shelby protocol contracts on Shelbynet, via the SDK. **No custom Solidity, and no app-owned Move modules in this repo.** |
+
+Network is **Shelbynet** (`Network.SHELBYNET`), not Aptos public testnet.
+
+---
+
+## What this app does *not* do
+
+- Measure or guarantee “~70% cheaper egress” — that is a Shelby protocol marketing claim, not something this UI computes.
+- Pay contributors ShelbyUSD per read, run a storefront checkout, or settle dataset sales.
+- Provide a global search index of every blob on the network (you search by uploader address).
+- Deploy itself. Clone and run, or deploy your own preview if you want a public URL.
+
+---
+
+## Getting started
 
 ### Prerequisites
 
 | Requirement | Details |
 |---|---|
 | Node.js | v18+ |
-| Petra Wallet | [petra.app](https://petra.app) — Chrome extension |
-| Shelbynet | Switch Petra network to **Shelbynet** |
-| API Keys | Acquire from [geomi.dev](https://geomi.dev) |
-| Test tokens | APT from [Aptos Faucet](https://aptos.dev/network/faucet) + ShelbyUSD from Discord |
+| Petra Wallet | [petra.app](https://petra.app) — switch the network to **Shelbynet** |
+| API keys | Client keys from [geomi.dev](https://geomi.dev) (runtime only) |
+| Test tokens | APT from the [Aptos faucet](https://aptos.dev/network/faucet) and ShelbyUSD via [Shelby Discord](https://discord.com/invite/shelbyserves) |
 
 ### Installation
 
 ```bash
-# 1. Clone the repo
-git clone https://github.com/your-username/shelbydata-marketplace
+git clone https://github.com/abubkar80/shelbydata-marketplace
 cd shelbydata-marketplace
 
-# 2. Install dependencies
 npm install
-
-# 3. Set up environment variables
 cp .env.example .env
-# Edit .env and add your API keys from geomi.dev
+# Optional for `npm run build`. Required to talk to Shelby/Aptos at runtime:
+# edit .env and set VITE_SHELBY_API_KEY and VITE_APTOS_API_KEY
 
-# 4. Start the dev server
 npm run dev
 ```
 
-Open `http://localhost:5173` in your browser.
+Open `http://localhost:5173`.
 
-### Getting API Keys
+`npm install && npm run build` is expected to succeed from the **repo root** with no API keys committed.
 
-1. Visit [geomi.dev](https://geomi.dev) and create an account
-2. Click **"API Resource"** on the overview page
-3. Set **Network** to `Testnet`
-4. Create a **Client** key (for frontend use)
-5. Copy the key into your `.env` as `VITE_SHELBY_API_KEY` and `VITE_APTOS_API_KEY`
+### Environment variables
 
-### Getting Test Tokens
+Copy `.env.example` → `.env`. Both variables are Vite-exposed client keys (not server secrets). Use a **Client** key from Geomi; the same key can be used for both if you only have one.
 
-**APT (gas fees):**
 ```
-https://aptos.dev/network/faucet
+VITE_SHELBY_API_KEY=
+VITE_APTOS_API_KEY=
 ```
 
-**ShelbyUSD (upload cost — 1 ShelbyUSD per file):**
-- Join the [Shelby Discord](https://discord.com/invite/shelbyserves)
-- Request testnet ShelbyUSD in the Discord
+Never commit a filled `.env`.
+
+### Getting API keys
+
+1. Create an account at [geomi.dev](https://geomi.dev)
+2. Create an API resource for **Shelbynet / Testnet** as documented by Geomi
+3. Create a **Client** key and paste it into `.env`
 
 ---
 
-## 📁 Project Structure
+## Architecture (what the code actually calls)
 
 ```
-shelbydata-marketplace/
+Browser
+  ├── Petra (Shelbynet)
+  ├── @aptos-labs/wallet-adapter-react
+  │     signAndSubmitTransaction()
+  │       1. blob_metadata::register_blob
+  │       2. blob_metadata::commit_object
+  └── @shelby-protocol/sdk/browser
+        generateCommitments(Uint8Array)
+        rpc.putBlobChunksets()
+        index.listObjectsByPrefix()
+```
+
+Direct download URL pattern:
+
+```
+https://shelby.shelbynet.shelby.xyz/shelby/v1/blobs/<uploader-address>/<blob-name>
+```
+
+---
+
+## Project structure
+
+```
+shelbydata-marketplace/          # app lives at repo root
 ├── src/
-│   ├── components/
-│   │   ├── Layout/          # Header, Footer, Layout wrapper
-│   │   ├── Upload/          # 3-step upload form with drag-and-drop
-│   │   ├── Dashboard/       # User's uploaded datasets
-│   │   ├── Marketplace/     # Dataset card + marketplace browser
-│   │   ├── WalletButton.tsx # Petra wallet connect/disconnect
-│   │   └── ToastContainer.tsx
-│   ├── hooks/
-│   │   └── useShelby.ts     # Core Shelby operations hook
-│   ├── lib/
-│   │   ├── aptosClient.ts   # Aptos SDK singleton
-│   │   └── shelbyClient.ts  # Shelby SDK factory + helpers
-│   ├── pages/               # Route-level components
-│   ├── providers/           # WalletProvider, ToastProvider
-│   ├── types/               # TypeScript interfaces and enums
-│   └── main.tsx
+│   ├── components/              # Layout, Upload, Dashboard, Marketplace
+│   ├── hooks/useShelby.ts       # encode → register → put → commit
+│   ├── lib/                     # clients, address helpers, metadata packing
+│   ├── pages/
+│   └── providers/
 ├── .env.example
-├── vite.config.ts
-├── tailwind.config.js
+├── LICENSE
+├── package-lock.json
 └── README.md
 ```
 
 ---
 
-## 🔑 Key Features
+## License
 
-### ✅ Wallet Integration
-- Petra wallet connect/disconnect with network detection
-- Auto-connect support
-- Truncated address display + copy to clipboard
-
-### ✅ Dataset Upload (3-Step Flow)
-- Drag-and-drop or click-to-browse file selection
-- Metadata form: name, description, category, tags, license
-- Live terminal log during upload with progress bar
-- On-chain TX hash displayed and linked
-
-### ✅ Dashboard
-- Lists all datasets uploaded from connected wallet
-- Stats: total count, total size, active count
-- Per-dataset: size, expiry countdown, format, download/view actions
-
-### ✅ Marketplace Browser
-- Search any Aptos address to browse their public datasets
-- Filter by filename
-- Direct download + raw blob URL access
+MIT. See `LICENSE`.
 
 ---
 
-## 🛠️ Tech Stack
+## Resources
 
-| Layer | Technology |
-|---|---|
-| Frontend | React 18 + Vite |
-| Styling | Tailwind CSS (custom space-terminal theme) |
-| Routing | React Router v6 |
-| Blockchain | Aptos Testnet |
-| Storage | Shelby Network (Shelbynet) |
-| SDK | `@shelby-protocol/sdk` (browser) |
-| Wallet | `@aptos-labs/wallet-adapter-react` + Petra |
-| Types | TypeScript strict mode |
-
----
-
-## 🌍 Why This Matters for West Africa
-
-Access to high-quality, affordable AI datasets is one of the biggest barriers for AI researchers and developers across Africa. Centralized platforms are expensive, region-restricted, and offer no monetization for local data contributors.
-
-ShelbyData solves this by:
-- **Lowering the cost** of dataset access (70% cheaper egress vs cloud)
-- **Rewarding local contributors** with ShelbyUSD for their data
-- **Removing geographic restrictions** — decentralized storage has no regions
-- **Enabling local AI ecosystems** — Nigerian, Ghanaian, and broader African language datasets can be hosted and monetized here
-
----
-
-## 📜 License
-
-MIT — free to use, fork, and build upon.
-
----
-
-## 🔗 Resources
-
-- [Shelby Protocol Docs](https://docs.shelby.xyz/protocol)
-- [Shelby Explorer](https://explorer.shelby.xyz/shelbynet)
-- [Aptos Testnet Faucet](https://aptos.dev/network/faucet)
-- [Geomi API Keys](https://geomi.dev)
+- [Shelby Protocol docs](https://docs.shelby.xyz/protocol)
+- [Shelby Explorer (Shelbynet)](https://explorer.shelby.xyz/shelbynet)
+- [Aptos faucet](https://aptos.dev/network/faucet)
+- [Geomi API keys](https://geomi.dev)
 - [Shelby Discord](https://discord.com/invite/shelbyserves)
 - [Petra Wallet](https://petra.app)
-
----
-
-Built with ❤️ for the Shelby Network Testnet.
